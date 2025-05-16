@@ -1,5 +1,4 @@
-# TrophyVault
-🏆 TROPHY VAULT 🏆
+🏆 # TROPHY VAULT 🏆
 =================
 ¡FELIZ CUMPLEAÑOS, DANI!
 
