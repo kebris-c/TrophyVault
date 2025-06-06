@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    trophy_vault.py                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kebris-c <kebris-c@student.42madrid.c      +#+  +:+       +#+         #
+#    By: kebris-c <kebris-c@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/05/16 18:01:49 by kebris-c          #+#    #+#              #
-#    Updated: 2025/05/16 18:32:03 by kebris-c         ###   ########.fr        #
+#    Updated: 2025/06/06 13:07:37 by kebris-c         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -1433,8 +1433,51 @@ class TrophyVaultApp(QMainWindow):
         tab = QWidget()
         layout = QVBoxLayout(tab)
 
-        # Obtener estadísticas
         stats = self.db_manager.get_stats()
 
         # Sección de estadísticas generales
-        stats_group = QGroupBox("
+        stats_group = QGroupBox("Estadísticas Generales")
+        stats_layout = QVBoxLayout()
+
+        juegos_label = QLabel(f"Total de juegos: {stats.get('total_games', 0)}")
+        completados_label = QLabel(f"Juegos completados: {stats.get('completed_games', 0)}")
+        trofeos_total_label = QLabel(f"Total de trofeos: {stats.get('total_trophies', 0)}")
+        trofeos_conseguidos_label = QLabel(f"Trofeos conseguidos: {stats.get('earned_trophies', 0)}")
+        porcentaje_global = stats.get("global_percentage", 0)
+        progreso_label = QLabel(f"Progreso global: {porcentaje_global:.2f}%")
+
+        stats_layout.addWidget(juegos_label)
+        stats_layout.addWidget(completados_label)
+        stats_layout.addWidget(trofeos_total_label)
+        stats_layout.addWidget(trofeos_conseguidos_label)
+        stats_layout.addWidget(progreso_label)
+
+        stats_group.setLayout(stats_layout)
+        layout.addWidget(stats_group)
+
+        # Sección de trofeos recientes
+        recent_group = QGroupBox("Últimos trofeos conseguidos")
+        recent_layout = QVBoxLayout()
+
+        for trophy in stats.get("recent_trophies", []):
+            name, game, tipo, fecha = trophy
+            label = QLabel(f"{name} ({tipo}) - {game} [{fecha}]")
+            recent_layout.addWidget(label)
+
+        recent_group.setLayout(recent_layout)
+        layout.addWidget(recent_group)
+
+        # Sección de top juegos
+        top_group = QGroupBox("Top Juegos por Progreso")
+        top_layout = QVBoxLayout()
+
+        for game in stats.get("top_games", []):
+            name, completion, total, earned = game
+            label = QLabel(f"{name}: {earned}/{total} trofeos - {completion:.2f}% completado")
+            top_layout.addWidget(label)
+
+        top_group.setLayout(top_layout)
+        layout.addWidget(top_group)
+
+        tab.setLayout(layout)
+        return tab
